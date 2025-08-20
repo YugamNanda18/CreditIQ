@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreditIQ - Explainable Credit Intelligence Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.29.3/index.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>CreditIQ</h1>
+            <p>Real-Time Explainable Credit Intelligence Platform</p>
+            <div class="last-updated">
+                Last Updated: <span id="lastUpdated"></span>
+            </div>
+        </header>
+
+        <!-- Dashboard Layout -->
+        <div class="dashboard">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Issuer Selection -->
+                <div class="issuer-selector">
+                    <h3>Select Issuer</h3>
+                    <select id="issuerSelect">
+                        <option value="AAPL">Apple Inc. (AAPL)</option>
+                        <option value="MSFT">Microsoft Corp. (MSFT)</option>
+                        <option value="GOOGL">Alphabet Inc. (GOOGL)</option>
+                        <option value="TSLA">Tesla Inc. (TSLA)</option>
+                        <option value="JPM">JPMorgan Chase (JPM)</option>
+                        <option value="BAC">Bank of America (BAC)</option>
+                        <option value="US_GOVT">US Government</option>
+                        <option value="INDIA_GOVT">Government of India</option>
+                    </select>
+                </div>
+
+                <!-- Credit Score Display -->
+                <div class="score-display">
+                    <h3>Current Credit Rating</h3>
+                    <div class="score-circle" id="scoreCircle">
+                        <span id="scoreValue">AAA</span>
+                    </div>
+                    <div class="score-numeric">
+                        Score: <span id="scoreNumeric">950</span>/1000
+                    </div>
+                    <div class="score-change" id="scoreChange">
+                        ↑ +5 points (24h)
+                    </div>
+                </div>
+
+                <!-- Data Sources Status -->
+                <div class="data-sources">
+                    <h3>Data Sources</h3>
+                    <div class="data-source">
+                        <div>
+                            <span class="status-indicator status-online"></span>
+                            SEC EDGAR
+                        </div>
+                        <span class="update-time">2m ago</span>
+                    </div>
+                    <div class="data-source">
+                        <div>
+                            <span class="status-indicator status-online"></span>
+                            Yahoo Finance
+                        </div>
+                        <span class="update-time">1m ago</span>
+                    </div>
+                    <div class="data-source">
+                        <div>
+                            <span class="status-indicator status-warning"></span>
+                            News Feed
+                        </div>
+                        <span class="update-time">5m ago</span>
+                    </div>
+                    <div class="data-source">
+                        <div>
+                            <span class="status-indicator status-online"></span>
+                            FRED Economic
+                        </div>
+                        <span class="update-time">3m ago</span>
+                    </div>
+                    <div class="data-source">
+                        <div>
+                            <span class="status-indicator status-offline"></span>
+                            World Bank
+                        </div>
+                        <span class="update-time">15m ago</span>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h3>Quick Actions</h3>
+                    <button class="action-btn" onclick="refreshData()">
+                        🔄 Refresh Data
+                    </button>
+                    <button class="action-btn" onclick="exportReport()">
+                        📊 Export Report
+                    </button>
+                    <button class="action-btn" onclick="setAlert()">
+                        🔔 Set Alert
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Score Trend Chart -->
+                <div class="card">
+                    <h3>Credit Score Trend</h3>
+                    <div class="chart-container">
+                        <canvas id="scoreTrendChart"></canvas>
+                    </div>
+                    <div class="chart-controls">
+                        <button class="time-filter active" data-period="24h">24H</button>
+                        <button class="time-filter" data-period="7d">7D</button>
+                        <button class="time-filter" data-period="30d">30D</button>
+                        <button class="time-filter" data-period="1y">1Y</button>
+                    </div>
+                </div>
+
+                <!-- Feature Importance -->
+                <div class="card">
+                    <h3>Feature Importance & Explanations</h3>
+                    <div class="feature-importance" id="featureImportance">
+                        <!-- Features will be populated by JavaScript -->
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Bottom Section -->
+        <div class="bottom-section">
+            <!-- Events Feed -->
+            <div class="card events-card">
+                <h3>Recent Events & News Impact</h3>
+                <div class="events-feed" id="eventsFeed">
+                    <!-- Events will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Model Performance -->
+            <div class="card performance-card">
+                <h3>Model Performance Metrics</h3>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <div class="metric-value" id="accuracy">94.2%</div>
+                        <div class="metric-label">Accuracy</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="precision">91.8%</div>
+                        <div class="metric-label">Precision</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="recall">96.5%</div>
+                        <div class="metric-label">Recall</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="latency">234ms</div>
+                        <div class="metric-label">Avg Latency</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk Factors -->
+            <div class="card risk-card">
+                <h3>Key Risk Factors</h3>
+                <div class="risk-factors" id="riskFactors">
+                    <!-- Risk factors will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts Modal -->
+        <div id="alertModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>Set Credit Score Alert</h3>
+                <form id="alertForm">
+                    <div class="form-group">
+                        <label for="alertThreshold">Score Threshold:</label>
+                        <input type="number" id="alertThreshold" min="0" max="1000" value="900">
+                    </div>
+                    <div class="form-group">
+                        <label for="alertType">Alert Type:</label>
+                        <select id="alertType">
+                            <option value="below">Score drops below</option>
+                            <option value="above">Score rises above</option>
+                            <option value="change">Score changes by ±</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn">Set Alert</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="loader"></div>
+            <p>Updating credit intelligence...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
